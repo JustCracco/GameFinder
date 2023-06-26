@@ -81,7 +81,7 @@ namespace GameFinder_WebAPI.Controllers
             var check = await gameService.DeleteGameAsync(title);
 
             if (check == null)
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Gioco non trovato");
+                return NotFound();
 
             return Ok();
         }

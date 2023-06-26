@@ -227,7 +227,7 @@ namespace GameFinder_TestsController
 
             var check = await gamesController.DeleteGame("Fallout 3");
 
-            Assert.IsType<ObjectResult>(check);
+            Assert.IsType<NotFoundResult>(check);
         }
 
         [Fact]

@@ -76,15 +76,7 @@ namespace GameFinder_WebAPI.Services
 
         public async Task<List<Game>> GetGameByVoteAsync(float minVote)
         {
-            List<Game> games = await Db.Games.ToListAsync();
-
-            for (int i = games.Count - 1; i >= 0; i--)
-            {
-                if (games[i].Vote < minVote)
-                    games.RemoveAt(i);
-            }
-
-            return games;
+            return await Db.Games.Where(game => game.Vote >= minVote).ToListAsync();
         }
     }
 }
