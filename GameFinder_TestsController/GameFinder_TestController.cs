@@ -10,8 +10,8 @@ namespace GameFinder_TestsController
 {
     public class GameFinder_TestController
     {
-        readonly GameDb content;
-        readonly GameService service;
+        readonly GameDb Content;
+        readonly GameService Service;
         readonly GamesController gamesController;
 
         DbContextOptions<GameDb> GetOptions()
@@ -23,9 +23,9 @@ namespace GameFinder_TestsController
 
         public GameFinder_TestController()
         {
-            content = new GameDb(GetOptions());
-            service = new GameService(content);
-            gamesController = new GamesController(service);
+            Content = new GameDb(GetOptions());
+            Service = new GameService(Content);
+            gamesController = new GamesController(Service);
         }
 
         [Fact]
@@ -41,26 +41,10 @@ namespace GameFinder_TestsController
         {
             await gamesController.AddGame(new Game
             {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84
-            });
-
-            await gamesController.AddGame(new Game
-            {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-            });
-
-            await gamesController.AddGame(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
+                Name = "The Last of Us",
+                Production = "Naughty Dog",
+                Date = "14/06/2013",
+                Vote = 95
             });
 
             var check = await gamesController.GetGameByTitle("The Last of Us");
@@ -73,26 +57,26 @@ namespace GameFinder_TestsController
         {
             await gamesController.AddGame(new Game
             {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84
             });
 
             await gamesController.AddGame(new Game
-            {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
+            {   
+                Name = "The Last of Us",
+                Production = "Naughty Dog",
+                Date = "14/06/2013",
+                Vote = 95
             });
 
             await gamesController.AddGame(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
+            {   
+                Name = "Final Fantasy 7",
+                Production = "Square Enix",
+                Date = "31/01/1997",
+                Vote = 92
             });
 
             var check = await gamesController.GetGameByVote(100);
@@ -105,26 +89,26 @@ namespace GameFinder_TestsController
         {
             await gamesController.AddGame(new Game
             {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84
             });
 
             await gamesController.AddGame(new Game
             {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
+                Name = "The Last of Us",
+                Production = "Naughty Dog",
+                Date = "14/06/2013",
+                Vote = 95
             });
 
             await gamesController.AddGame(new Game
             {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
+                Name = "Final Fantasy 7",
+                Production = "Square Enix",
+                Date = "31/01/1997",
+                Vote = 92
             });
 
             var check = await gamesController.GetGameByVote(90);
@@ -133,23 +117,21 @@ namespace GameFinder_TestsController
         }
 
         [Fact]
-        public async Task AddItem_ReturnCreated_WhenObjectCreated()
+        public async Task AddItem_ReturnOk_WhenObjectCreated()
         {
-            var check = await gamesController.AddGame(new Game
+            Assert.IsType<OkObjectResult>(await gamesController.AddGame(new Game
             {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
-
-            Assert.IsType<ObjectResult>(check);
+                Name = "Final Fantasy 7",
+                Production = "Square Enix",
+                Date = "31/01/1997",
+                Vote = 92
+            }));
         }
 
         [Fact]
         public async Task AddItem_ReturnBadRequest_WhenObjectIsNull()
         {
-            var check = await gamesController.AddGame(NewGame: null);
+            var check = await gamesController.AddGame(newGame: null);
 
             Assert.IsType<BadRequestResult>(check);
         }
@@ -159,18 +141,18 @@ namespace GameFinder_TestsController
         {
             await gamesController.AddGame(new Game
             {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
+                Name = "Final Fantasy 7",
+                Production = "Square Enix",
+                Date = "31/01/1997",
+                Vote = 92
             });
 
-            Assert.IsType<ConflictObjectResult>(await gamesController.AddGame(new Game
+            Assert.IsType<ConflictResult>(await gamesController.AddGame(new Game
             {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
+                Name = "Final Fantasy 7",
+                Production = "Square Enix",
+                Date = "31/01/1997",
+                Vote = 92
             }));
         }
 
@@ -179,67 +161,17 @@ namespace GameFinder_TestsController
         {
             var test = new Game
             {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
+                Name = "Final Fantasy 7",
+                Production = "Square Enix",
+                Date = "31/01/1997",
+                Vote = 92
             };
-
-            await gamesController.AddGame(new Game
-            {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84
-            });
-
-            await gamesController.AddGame(new Game
-            {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-            });
 
             await gamesController.AddGame(test);
 
             var check = await gamesController.UpdateGame("Fallout 3", test);
 
-            Assert.IsType<BadRequestResult>(check);
-        }
-
-        [Fact]
-        public async Task UpdateItem_ReturnError_WhenObjectAlreadyExist()
-        {
-            var test = new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            };
-
-            await gamesController.AddGame(new Game
-            {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84
-            });
-
-            await gamesController.AddGame(new Game
-            {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-            });
-
-            await gamesController.AddGame(test);
-
-            var check = await gamesController.UpdateGame("Final Fantasy 7", test);
-
-            Assert.IsType<ConflictResult>(check);
+            Assert.IsType<NotFoundResult>(check);
         }
 
         [Fact]
@@ -247,21 +179,13 @@ namespace GameFinder_TestsController
         {
             await gamesController.AddGame(new Game
             {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84
             });
 
-            await gamesController.AddGame(new Game
-            {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-            });
-
-            var check = await gamesController.UpdateGame("Fallout 3", null);
+            var check = await gamesController.UpdateGame("Fallout 4", null);
 
             Assert.IsType<BadRequestResult>(check);
         }
@@ -269,69 +193,36 @@ namespace GameFinder_TestsController
         [Fact]
         public async Task UpdateItem_ReturnAccepted_WhenObjectExist()
         {
-
-            await gamesController.AddGame(new Game
-            {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84
-            });
-
-            await gamesController.AddGame(new Game
-            {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-            });
-
-            await gamesController.AddGame(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
-
             var updated = new Game
             {
-                name = "Fallout 3",
-                production = "Bethesda",
-                date = "28/10/2008",
-                vote = 91
+                Name = "Fallout 3",
+                Production = "Bethesda",
+                Date = "28/10/2008",
+                Vote = 91
             };
+
+            await gamesController.AddGame(new Game
+            {
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84
+            });
 
             var check = await gamesController.UpdateGame("Fallout 4", updated);
 
-            Assert.IsType<ObjectResult>(check);
+            Assert.IsType<OkObjectResult>(check);
         }
 
         [Fact]
         public async Task DeleteItem_ReturnError_WhenObjectDoesNotExist()
         {
-            await service.AddGameAsync(new Game
+            await gamesController.AddGame(new Game
             {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-            });
-
-            await service.AddGameAsync(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
-
-            await service.AddGameAsync(new Game
-            {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84
             });
 
             var check = await gamesController.DeleteGame("Fallout 3");
@@ -342,28 +233,12 @@ namespace GameFinder_TestsController
         [Fact]
         public async Task DeleteItem_ReturnOk_WhenObjectExist()
         {
-            await service.AddGameAsync(new Game
+            await gamesController.AddGame(new Game
             {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-            });
-
-            await service.AddGameAsync(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
-
-            await service.AddGameAsync(new Game
-            {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84
             });
 
             var check = await gamesController.DeleteGame("Fallout 4");

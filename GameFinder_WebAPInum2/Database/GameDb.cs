@@ -7,6 +7,6 @@ namespace GameFinder_WebAPI.Database
     {
         public GameDb(DbContextOptions options) : base(options) { }
 
-        public DbSet<Game> Games => Set<Game>();
+        public DbSet<Game> Games { get; set; }
     }
 }

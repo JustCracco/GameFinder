@@ -6,14 +6,14 @@ namespace GameFinder_WebAPI.Services.IServices
     {
         public void StartDb();
 
-        public Task<(ArgumentException?, Game?)> AddGameAsync(Game NewGame);
+        public Task<Game> AddGameAsync(Game newGame);
 
-        public Task<(ArgumentException?, Game?)> UpdateGameAsync(string titolo, Game UpdateGame);
+        public Task<Game> UpdateGameAsync(string title, Game updateGame);
 
-        public Task<Game?> DeleteGameAsync(string titolo);
+        public Task<Game?> DeleteGameAsync(string title);
 
-        public Task<Game?> GetGameByTitleAsync(string titolo);
+        public Task<Game?> GetGameByTitleAsync(string title);
 
-        public Task<List<Game>> GetGameByVoteAsync(float minvote);
+        public Task<List<Game>> GetGameByVoteAsync(float minVote);
     }
 }

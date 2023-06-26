@@ -18,36 +18,27 @@ namespace GameFinder_TestsService
         [Fact]
         public async Task GetItemsByTitle_ReturnNull_WhenTitleIsEmpty()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
 
-            Assert.Null(await service.GetGameByTitleAsync(""));
+            Assert.Null(await Service.GetGameByTitleAsync(""));
         }
 
         [Fact]
         public async Task GetItemsByTitle_ReturnNull_WhenObjectDoesNotExist()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
 
-            await service.AddGameAsync(new Game
+            await Service.AddGameAsync(new Game
             {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
+                Name = "The Last of Us",
+                Production = "Naughty Dog",
+                Date = "14/06/2013",
+                Vote = 95
             });
 
-            await service.AddGameAsync(new Game
-            {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-
-            });
-
-            var result = await service.GetGameByTitleAsync("Final Fantasy 7");
+            var result = await Service.GetGameByTitleAsync("Final Fantasy 7");
 
             Assert.Null(result);
         }
@@ -55,74 +46,58 @@ namespace GameFinder_TestsService
         [Fact]
         public async Task GetItemsByTitle_ReturnObject_WhenObjectExist()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
 
             var check = new Game
             {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
+                Name = "The Last of Us",
+                Production = "Naughty Dog",
+                Date = "14/06/2013",
+                Vote = 95
             };
 
-            await service.AddGameAsync(new Game
-            {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
-            });
+            await Service.AddGameAsync(check);
 
-            await service.AddGameAsync(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
+            var result = await Service.GetGameByTitleAsync("The Last of Us");
 
-            await service.AddGameAsync(check);
-
-            var result = await service.GetGameByTitleAsync("The Last of Us");
-
-            Assert.Equal(check.name, result.name);
-            Assert.Equal(check.production, result.production);
-            Assert.Equal(check.date, result.date);
-            Assert.Equal(check.vote, result.vote);
+            Assert.Equal(check.Name, result.Name);
+            Assert.Equal(check.Production, result.Production);
+            Assert.Equal(check.Date, result.Date);
+            Assert.Equal(check.Vote, result.Vote);
         }
 
         [Fact]
         public async Task GetItemsByVote_ReturnEmptyList_WhenParameterIsOutOfRange()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
 
-            await service.AddGameAsync(new Game
+            await Service.AddGameAsync(new Game
             {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84
             });
 
-            await service.AddGameAsync(new Game
+            await Service.AddGameAsync(new Game
             {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
+                Name = "The Last of Us",
+                Production = "Naughty Dog",
+                Date = "14/06/2013",
+                Vote = 95
             });
 
-            await service.AddGameAsync(new Game
+            await Service.AddGameAsync(new Game
             {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
+                Name = "Final Fantasy 7",
+                Production = "Square Enix",
+                Date = "31/01/1997",
+                Vote = 92
             });
 
-            var result = await service.GetGameByVoteAsync(100);
+            var result = await Service.GetGameByVoteAsync(100);
 
             Assert.Empty(result);
         }
@@ -130,305 +105,160 @@ namespace GameFinder_TestsService
         [Fact]
         public async Task GetItemsByVote_ReturnList_WhenParameterIsInRange()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
 
-            await service.AddGameAsync(new Game
+            await Service.AddGameAsync(new Game
             {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84,
             });
 
-            await service.AddGameAsync(new Game
+            await Service.AddGameAsync(new Game
             {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
+                Name = "Final Fantasy 7",
+                Production = "Square Enix",
+                Date = "31/01/1997",
+                Vote = 92
             });
 
-            await service.AddGameAsync(new Game
+            await Service.AddGameAsync(new Game
             {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
+                Name = "The Last of Us",
+                Production = "Naughty Dog",
+                Date = "14/06/2013",
+                Vote = 95
             });
 
-            var result = await service.GetGameByVoteAsync(90);
+            var result = await Service.GetGameByVoteAsync(90);
 
             Assert.Equal(2, result.Count);
         }
 
         [Fact]
-        public async Task AddItem_ReturnNull_WhenItemAlreadyExists()
+        public async Task AddItem_ReturnException_WhenItemAlreadyExists()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
             Game game = new Game
             {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
+                Name = "The Last of Us",
+                Production = "Naughty Dog",
+                Date = "14/06/2013",
+                Vote = 95
             };
 
-            await service.AddGameAsync(game);
+            await Service.AddGameAsync(game);
 
-            await service.AddGameAsync(new Game
-            {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
-            });
-
-            await service.AddGameAsync(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
-
-            (ArgumentException? e, Game? test) = await service.AddGameAsync(game);
-
-            Assert.IsType<ArgumentException>(e);
+            await Assert.ThrowsAsync<ArgumentException>(async () => await Service.AddGameAsync(game));
         }
 
         [Fact]
-        public async Task AddItem_ReturnNull_WhenObjectIsNull()
+        public async Task AddItem_ReturnException_WhenObjectIsNull()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
 
-            (ArgumentException? e, Game? test) = await service.AddGameAsync(NewGame: null);
-
-            Assert.IsType<ArgumentNullException>(e);
-        }
-
-        [Fact]
-        public async Task UpdateItem_ReturnException_WhenObjectAlreadyExist()
-        {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
-            Game check = new Game
-            {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
-            };
-
-            await service.AddGameAsync(new Game
-            {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-            });
-
-            await service.AddGameAsync(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
-
-            await service.AddGameAsync(check);
-
-            (ArgumentException? e, Game? test) = await service.UpdateGameAsync("Fallout 4", check);
-
-            Assert.IsType<ArgumentException>(e);
-            Assert.Null(test);
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await Service.AddGameAsync(null));
         }
 
         [Fact]
         public async Task UpdateItem_ReturnException_WhenObjectIsNull()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
             Game check = new Game
             {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84,
             };
 
-            await service.AddGameAsync(new Game
-            {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-            });
+            await Service.AddGameAsync(check);
 
-            await service.AddGameAsync(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
-
-            await service.AddGameAsync(check);
-
-            (ArgumentException? e, Game? test) = await service.UpdateGameAsync("Fallout 4", null);
-
-            Assert.IsType<ArgumentNullException>(e);
-            Assert.Null(test);
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await Service.UpdateGameAsync("Fallout 4", null));
         }
 
         [Fact]
         public async Task UpdateItem_ReturnException_WhenObjectDoesNotExist()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
 
             var check = new Game
             {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84,
             };
 
-            await service.AddGameAsync(new Game
-            {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-            });
+            await Service.AddGameAsync(check);
 
-            await service.AddGameAsync(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
-
-            await service.AddGameAsync(check);
-
-            (ArgumentException? e, Game? test) = await service.UpdateGameAsync("Fallout 3", check);
-
-            Assert.Null(e);
-            Assert.Null(test);
+            await Assert.ThrowsAsync<ArgumentException>(async () => await Service.UpdateGameAsync("Fallout 3", check));
         }
 
         [Fact]
         public async Task UpdateItem_ReturnItem_WhenObjectExist()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
-
-            await service.AddGameAsync(new Game
-            {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
-            });
-
-            await service.AddGameAsync(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
-
-            await service.AddGameAsync(new Game
-            {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
-            });
-
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
             var updated = new Game
             {
-                name = "Fallout 3",
-                production = "Bethesda",
-                date = "28/10/2008",
-                vote = 91
+                Name = "Fallout 3",
+                Production = "Bethesda",
+                Date = "28/10/2008",
+                Vote = 91
             };
 
-            (ArgumentException? e, Game? test) = await service.UpdateGameAsync("Fallout 4", updated);
+            await Service.AddGameAsync(new Game
+            {
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84,
+            });
+
+            Game test = await Service.UpdateGameAsync("Fallout 4", updated);
 
             Assert.IsType<Game>(test);
-            Assert.Null(e);
         }
 
         [Fact]
         public async Task DeleteItem_ReturnNull_WhenObjectDoesNotExist()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
 
-            await service.AddGameAsync(new Game
+            await Service.AddGameAsync(new Game
             {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84,
             });
 
-            await service.AddGameAsync(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
-
-            await service.AddGameAsync(new Game
-            {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
-            });
-
-            Assert.Null(await service.DeleteGameAsync("Fallout 3"));
+            Assert.Null(await Service.DeleteGameAsync("Fallout 3"));
         }
 
         [Fact]
         public async Task DeleteItem_ReturnItem_WhenObjectExist()
         {
-            await using var content = new GameDb(GetOptions());
-            GameService service = new GameService(content);
+            await using var Content = new GameDb(GetOptions());
+            GameService Service = new GameService(Content);
 
-            await service.AddGameAsync(new Game
+            await Service.AddGameAsync(new Game
             {
-                name = "The Last of Us",
-                production = "Naughty Dog",
-                date = "14/06/2013",
-                vote = 95
+                Name = "Fallout 4",
+                Production = "Bethesda",
+                Date = "10/11/2015",
+                Vote = 84,
             });
 
-            await service.AddGameAsync(new Game
-            {
-                name = "Final Fantasy 7",
-                production = "Square Enix",
-                date = "31/01/1997",
-                vote = 92
-            });
-
-            await service.AddGameAsync(new Game
-            {
-                name = "Fallout 4",
-                production = "Bethesda",
-                date = "10/11/2015",
-                vote = 84,
-            });
-
-            Assert.NotNull(await service.DeleteGameAsync("Fallout 4"));
+            Assert.NotNull(await Service.DeleteGameAsync("Fallout 4"));
         }
     }
 }

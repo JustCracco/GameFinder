@@ -2,16 +2,17 @@
 using GameFinder_WebAPI.Models;
 using GameFinder_WebAPI.Services.IServices;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace GameFinder_WebAPI.Services
 {
     public class GameService : IGameService
     {
-        private readonly GameDb db;
+        private readonly GameDb Db;
 
         public GameService(GameDb db)
         {
-            this.db = db;
+            this.Db = db;
         }
 
         public void StartDb()
@@ -19,122 +20,67 @@ namespace GameFinder_WebAPI.Services
             //database da implementare ogni volta che si avvia il debug
         }
 
-        public async Task<(ArgumentException?, Game?)> AddGameAsync(Game NewGame)
+        public async Task<Game> AddGameAsync(Game newGame)
         {
-            try
-            {
-                if(NewGame == null)
-                    throw new ArgumentNullException();
+            if(newGame == null)
+                throw new ArgumentNullException();
 
-                List<Game> games = await db.Games.ToListAsync();
+            var games = await Db.Games.FirstOrDefaultAsync(game => game.Name == newGame.Name);
 
-                for (int i = games.Count - 1; i >= 0; i--)
-                {
-                    if (NewGame.name == games[i].name)
-                        throw new ArgumentException();
-                }
+            if (games != null)
+                throw new ArgumentException();
 
-                db.Games.Add(NewGame);
+            Db.Games.Add(newGame);
 
-                await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
-                return (null, NewGame);
-            }
-            catch (ArgumentException e)
-            {
-                return (e, null);
-            }
+            return newGame;
         }
 
-        public async Task<(ArgumentException?, Game?)> UpdateGameAsync(string titolo, Game UpdateGame)
+        public async Task<Game> UpdateGameAsync(string title, Game updateGame)
         {
-            try
-            {
-                if (UpdateGame == null)
-                    throw new ArgumentNullException();
+            if (updateGame == null)
+                throw new ArgumentNullException();
 
-                List<Game> games = await db.Games.ToListAsync();
+            var game = await Db.Games.FirstOrDefaultAsync(game => game.Name == title);
 
-                for (int i = 0; i < games.Count; i++)
-                {
-                    if (games[i].name == titolo)
-                    {
-                        for(int j = i; j < games.Count; j++)
-                        {
-                            if (games[j].name == UpdateGame.name)
-                                throw new ArgumentException();
-                        }
+            if (game == null)
+                throw new ArgumentException();
 
-                        if (games[i].name != UpdateGame.name)
-                        {
-                            games[i].name = UpdateGame.name;
-                        }
-                        else if (games[i].production != UpdateGame.production)
-                        {
-                            games[i].production = UpdateGame.production;
-                        }
-                        else if (games[i].date != UpdateGame.date)
-                        {
-                            games[i].date = UpdateGame.date;
-                        }
-                        else if (games[i].vote != UpdateGame.vote)
-                        {
-                            games[i].vote = UpdateGame.vote;
-                        }
-                        else
-                            break;
+            game.Name = updateGame.Name;
+            game.Production = updateGame.Production;
+            game.Date = updateGame.Date;
+            game.Vote = updateGame.Vote;
 
-                        await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
-                        return (null, games[i]);
-                    }
-                }
-
-                return (null, null);
-            }
-            catch(ArgumentException e)
-            {
-                return (e, null);
-            }
+            return game;
         }
 
-        public async Task<Game?> DeleteGameAsync(string titolo)
+        public async Task<Game?> DeleteGameAsync(string title)
         {
-            List<Game> games = await db.Games.ToListAsync();
+            var games = await Db.Games.FirstOrDefaultAsync(game => game.Name == title);
 
-            for (int i = 0; i < games.Count; i++)
-            {
-                if (games[i].name == titolo)
-                {
-                    db.Games.Remove(games[i]);
-                    await db.SaveChangesAsync();
-                    return games[i];
-                }
-            }
+            if(games == null)
+                return null;
 
-            return null;
+            Db.Games.Remove(games);
+            await Db.SaveChangesAsync();
+            return games;
         }
 
-        public async Task<Game?> GetGameByTitleAsync(string titolo)
+        public async Task<Game?> GetGameByTitleAsync(string title)
         {
-            List<Game> games = await db.Games.ToListAsync();
-
-            for (int i = 0; i < games.Count; i++)
-            {
-                if (games[i].name == titolo)
-                    return games[i];
-            }
-
-            return null;
+            return await Db.Games.FirstOrDefaultAsync(game => game.Name == title);
         }
 
-        public async Task<List<Game>> GetGameByVoteAsync(float minvote)
+        public async Task<List<Game>> GetGameByVoteAsync(float minVote)
         {
-            List<Game> games = await db.Games.ToListAsync();
+            List<Game> games = await Db.Games.ToListAsync();
 
             for (int i = games.Count - 1; i >= 0; i--)
             {
-                if (games[i].vote < minvote)
+                if (games[i].Vote < minVote)
                     games.RemoveAt(i);
             }
 

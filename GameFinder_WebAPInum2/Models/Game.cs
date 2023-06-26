@@ -2,14 +2,14 @@
 {
     public class Game
     {
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        public string name { get; set; }
+        public string Name { get; set; }
 
-        public string production { get; set; }
+        public string Production { get; set; }
 
-        public string date { get; set; }
+        public string Date { get; set; }
 
-        public float vote { get; set; }
+        public float Vote { get; set; }
     }
 }

@@ -38,38 +38,47 @@ namespace GameFinder_WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddGame(Game NewGame)
+        public async Task<IActionResult> AddGame(Game newGame)
         {
-            (var e, var check) = await gameService.AddGameAsync(NewGame);
+            try
+            {
+                var check = await gameService.AddGameAsync(newGame);
 
-            if (e is ArgumentNullException)
+                return Ok(check);
+            }
+            catch (ArgumentNullException)
+            {
                 return BadRequest();
-
-            if (e is ArgumentException)
-                return Conflict("Gioco già presente");
-
-            return StatusCode(StatusCodes.Status201Created, check);
+            }
+            catch (ArgumentException)
+            {
+                return Conflict();
+            }
         }
 
         [HttpPut("title")]
-        public async Task<IActionResult> UpdateGame(string titolo, Game UpdateGame)
+        public async Task<IActionResult> UpdateGame(string title, Game updateGame)
         {
-            (var e, var check) = await gameService.UpdateGameAsync(titolo, UpdateGame);
+            try
+            {
+                var check = await gameService.UpdateGameAsync(title, updateGame);
 
-            if (e is ArgumentNullException)
+                return Ok(check);
+            }
+            catch (ArgumentNullException)
+            {
                 return BadRequest();
-            else if (e is ArgumentException)
-                return Conflict();
-            else if (e is null && check == null)
-                return BadRequest();
-
-            return StatusCode(StatusCodes.Status202Accepted, check);
+            }
+            catch (ArgumentException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpDelete("title")]
-        public async Task<IActionResult> DeleteGame(string titolo)
+        public async Task<IActionResult> DeleteGame(string title)
         {
-            var check = await gameService.DeleteGameAsync(titolo);
+            var check = await gameService.DeleteGameAsync(title);
 
             if (check == null)
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Gioco non trovato");
