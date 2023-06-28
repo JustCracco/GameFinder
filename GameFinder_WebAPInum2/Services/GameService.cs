@@ -15,11 +15,6 @@ namespace GameFinder_WebAPI.Services
             this.Db = db;
         }
 
-        public void StartDb()
-        {
-            //database da implementare ogni volta che si avvia il debug
-        }
-
         public async Task<Game> AddGameAsync(Game newGame)
         {
             if(newGame == null)
