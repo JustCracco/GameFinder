@@ -17,13 +17,15 @@ namespace GameFinder_TestsController
         DbContextOptions<GameDb> GetOptions()
         {
             return new DbContextOptionsBuilder<GameDb>()
-                .UseInMemoryDatabase("UnitTest " + DateTime.UtcNow.Millisecond.ToString())
+                .UseInMemoryDatabase("UnitTestControllers " + DateTime.UtcNow.Millisecond.ToString())
                 .Options;
         }
 
         public GameFinder_TestController()
         {
             Content = new GameDb(GetOptions());
+            Content.Database.EnsureDeletedAsync().Wait();
+            Content.Database.EnsureCreatedAsync().Wait();
             Service = new GameService(Content);
             gamesController = new GamesController(Service);
         }
@@ -121,10 +123,10 @@ namespace GameFinder_TestsController
         {
             Assert.IsType<OkObjectResult>(await gamesController.AddGame(new Game
             {
-                Name = "Final Fantasy 7",
+                Name = "Final Fantasy 8",
                 Production = "Square Enix",
-                Date = "31/01/1997",
-                Vote = 92
+                Date = "11/02/1999",
+                Vote = 90
             }));
         }
 
