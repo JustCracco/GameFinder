@@ -41,14 +41,6 @@ namespace GameFinder_TestsController
         [Fact]
         public async Task GetItemByTitle_ReturnOk_WhenObjectExist()
         {
-            await gamesController.AddGame(new Game
-            {
-                Name = "The Last of Us",
-                Production = "Naughty Dog",
-                Date = "14/06/2013",
-                Vote = 95
-            });
-
             var check = await gamesController.GetGameByTitle("The Last of Us");
 
             Assert.IsType<OkObjectResult>(check);
@@ -57,30 +49,6 @@ namespace GameFinder_TestsController
         [Fact]
         public async Task GetItemsByVote_ReturnNoContent_WhenParameterIsOutOfRange()
         {
-            await gamesController.AddGame(new Game
-            {
-                Name = "Fallout 4",
-                Production = "Bethesda",
-                Date = "10/11/2015",
-                Vote = 84
-            });
-
-            await gamesController.AddGame(new Game
-            {   
-                Name = "The Last of Us",
-                Production = "Naughty Dog",
-                Date = "14/06/2013",
-                Vote = 95
-            });
-
-            await gamesController.AddGame(new Game
-            {   
-                Name = "Final Fantasy 7",
-                Production = "Square Enix",
-                Date = "31/01/1997",
-                Vote = 92
-            });
-
             var check = await gamesController.GetGameByVote(100);
 
             Assert.IsType<NoContentResult>(check);
@@ -89,30 +57,6 @@ namespace GameFinder_TestsController
         [Fact]
         public async Task GetItemsByVote_ReturnOk_WhenParameterIsInRange()
         {
-            await gamesController.AddGame(new Game
-            {
-                Name = "Fallout 4",
-                Production = "Bethesda",
-                Date = "10/11/2015",
-                Vote = 84
-            });
-
-            await gamesController.AddGame(new Game
-            {
-                Name = "The Last of Us",
-                Production = "Naughty Dog",
-                Date = "14/06/2013",
-                Vote = 95
-            });
-
-            await gamesController.AddGame(new Game
-            {
-                Name = "Final Fantasy 7",
-                Production = "Square Enix",
-                Date = "31/01/1997",
-                Vote = 92
-            });
-
             var check = await gamesController.GetGameByVote(90);
 
             Assert.IsType<OkObjectResult>(check);
@@ -141,14 +85,6 @@ namespace GameFinder_TestsController
         [Fact]
         public async Task AddItem_ReturnConflict_WhenObjectAlreadyExist()
         {
-            await gamesController.AddGame(new Game
-            {
-                Name = "Final Fantasy 7",
-                Production = "Square Enix",
-                Date = "31/01/1997",
-                Vote = 92
-            });
-
             Assert.IsType<ConflictResult>(await gamesController.AddGame(new Game
             {
                 Name = "Final Fantasy 7",
@@ -169,8 +105,6 @@ namespace GameFinder_TestsController
                 Vote = 92
             };
 
-            await gamesController.AddGame(test);
-
             var check = await gamesController.UpdateGame("Fallout 3", test);
 
             Assert.IsType<NotFoundResult>(check);
@@ -179,14 +113,6 @@ namespace GameFinder_TestsController
         [Fact]
         public async Task UpdateItem_ReturnError_WhenObjectIsNull()
         {
-            await gamesController.AddGame(new Game
-            {
-                Name = "Fallout 4",
-                Production = "Bethesda",
-                Date = "10/11/2015",
-                Vote = 84
-            });
-
             var check = await gamesController.UpdateGame("Fallout 4", null);
 
             Assert.IsType<BadRequestResult>(check);
@@ -203,14 +129,6 @@ namespace GameFinder_TestsController
                 Vote = 91
             };
 
-            await gamesController.AddGame(new Game
-            {
-                Name = "Fallout 4",
-                Production = "Bethesda",
-                Date = "10/11/2015",
-                Vote = 84
-            });
-
             var check = await gamesController.UpdateGame("Fallout 4", updated);
 
             Assert.IsType<OkObjectResult>(check);
@@ -219,14 +137,6 @@ namespace GameFinder_TestsController
         [Fact]
         public async Task DeleteItem_ReturnError_WhenObjectDoesNotExist()
         {
-            await gamesController.AddGame(new Game
-            {
-                Name = "Fallout 4",
-                Production = "Bethesda",
-                Date = "10/11/2015",
-                Vote = 84
-            });
-
             var check = await gamesController.DeleteGame("Fallout 3");
 
             Assert.IsType<NotFoundResult>(check);
@@ -235,14 +145,6 @@ namespace GameFinder_TestsController
         [Fact]
         public async Task DeleteItem_ReturnOk_WhenObjectExist()
         {
-            await gamesController.AddGame(new Game
-            {
-                Name = "Fallout 4",
-                Production = "Bethesda",
-                Date = "10/11/2015",
-                Vote = 84
-            });
-
             var check = await gamesController.DeleteGame("Fallout 4");
 
             Assert.IsType<OkResult>(check);
